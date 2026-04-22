@@ -96,13 +96,14 @@ class Recommender:
 # ---------------------------------------------------------------------------
 
 WEIGHTS = {
-    "genre_match": 2.0,
+    "genre_match": 1.5,
     "mood_match": 1.0,
     "energy": 1.5,
     "acousticness": 1.25,
     "tempo_bpm": 0.75,
     "valence": 0.50,
 }
+# Max possible score: 1.5 + 1.0 + 1.5 + 1.25 + 0.75 + 0.50 = 6.50
 
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:

@@ -109,42 +109,64 @@ flowchart TD
 
 ## Sample Terminal Output
 
-Running `python -m src.main` with the default `pop/happy` profile:
+Running `python src/main.py` with 3 core profiles + 3 adversarial edge cases:
 
+### Profile 1 — High-Energy Pop
 ```
-Loaded songs: 18
-
-=======================================================
-  🎵  Top Recommendations for pop/happy listener
-=======================================================
-
-#1  Sunrise City — Neon Echo
-    Genre: pop  |  Mood: happy
-    Score: 6.93 / 7.00
-    Why:   genre match (pop) +2.0; mood match (happy) +1.0; energy sim 0.98 ×1.5 = +1.47; acousticness sim 0.98 ×1.25 = +1.23; tempo sim 0.99 ×0.75 = +0.74; valence sim 0.98 ×0.5 = +0.49
-
-#2  Gym Hero — Max Pulse
-    Genre: pop  |  Mood: intense
-    Score: 5.55 / 7.00
-    Why:   genre match (pop) +2.0; energy sim 0.87 ×1.5 = +1.30; acousticness sim 0.85 ×1.25 = +1.06; tempo sim 0.94 ×0.75 = +0.70; valence sim 0.95 ×0.5 = +0.48
-
-#3  Rooftop Lights — Indigo Parade
-    Genre: indie pop  |  Mood: happy
-    Score: 4.73 / 7.00
-    Why:   mood match (happy) +1.0; energy sim 0.96 ×1.5 = +1.44; acousticness sim 0.85 ×1.25 = +1.06; tempo sim 0.98 ×0.75 = +0.73; valence sim 0.99 ×0.5 = +0.50
-
-#4  Night Drive Loop — Neon Echo
-    Genre: synthwave  |  Mood: moody
-    Score: 3.70 / 7.00
-    Why:   energy sim 0.95 ×1.5 = +1.42; acousticness sim 0.98 ×1.25 = +1.23; tempo sim 0.95 ×0.75 = +0.71; valence sim 0.67 ×0.5 = +0.34
-
-#5  Neon Carnival — Prism Kids
-    Genre: electronic  |  Mood: euphoric
-    Score: 3.69 / 7.00
-    Why:   energy sim 0.92 ×1.5 = +1.38; acousticness sim 0.88 ×1.25 = +1.10; tempo sim 0.96 ×0.75 = +0.72; valence sim 0.97 ×0.5 = +0.48
-
-=======================================================
+  #1  Sunrise City — Neon Echo       Genre: pop     | Mood: happy    | Score: 6.74 / 7.00
+  #2  Gym Hero — Max Pulse           Genre: pop     | Mood: intense  | Score: 5.84 / 7.00
+  #3  Rooftop Lights — Indigo Parade Genre: indie pop| Mood: happy   | Score: 4.44 / 7.00
+  #4  Neon Carnival — Prism Kids     Genre: electronic| Mood: euphoric| Score: 3.94 / 7.00
+  #5  Drop Everything — Bass Theory  Genre: edm     | Mood: euphoric | Score: 3.75 / 7.00
 ```
+
+### Profile 2 — Chill Lofi
+```
+  #1  Library Rain — Paper Lanterns  Genre: lofi    | Mood: chill    | Score: 6.86 / 7.00
+  #2  Midnight Coding — LoRoom       Genre: lofi    | Mood: chill    | Score: 6.81 / 7.00
+  #3  Focus Flow — LoRoom            Genre: lofi    | Mood: focused  | Score: 5.92 / 7.00
+  #4  Spacewalk Thoughts — Orbit Bloom Genre: ambient| Mood: chill   | Score: 4.61 / 7.00
+  #5  Rainy Season — Blue Ember      Genre: blues   | Mood: sad      | Score: 3.77 / 7.00
+```
+
+### Profile 3 — Deep Intense Rock
+```
+  #1  Storm Runner — Voltline        Genre: rock    | Mood: intense  | Score: 6.83 / 7.00
+  #2  Gym Hero — Max Pulse           Genre: pop     | Mood: intense  | Score: 4.70 / 7.00
+  #3  Shattered Glass — Iron Cult    Genre: metal   | Mood: angry    | Score: 3.82 / 7.00
+  #4  Drop Everything — Bass Theory  Genre: edm     | Mood: euphoric | Score: 3.64 / 7.00
+  #5  Neon Carnival — Prism Kids     Genre: electronic| Mood: euphoric| Score: 3.53 / 7.00
+```
+
+### EDGE 1 — Conflicting Preferences (high energy + sad mood)
+```
+  #1  Rainy Season — Blue Ember      Genre: blues   | Mood: sad      | Score: 5.11 / 7.00
+  #2  Broken Streetlight — Hollow Crown Genre: hip-hop| Mood: sad    | Score: 4.38 / 7.00
+  #3  Storm Runner — Voltline        Genre: rock    | Mood: intense  | Score: 3.80 / 7.00
+  #4  Shattered Glass — Iron Cult    Genre: metal   | Mood: angry    | Score: 3.76 / 7.00
+  #5  Gym Hero — Max Pulse           Genre: pop     | Mood: intense  | Score: 3.58 / 7.00
+```
+> Observation: Genre+mood bonus locks in Rainy Season at #1 despite its energy (0.39) being far from the target (0.90). The +3.0 categorical bonus overpowers the numeric mismatch.
+
+### EDGE 2 — Genre Orphan (metal — only 1 song in catalog)
+```
+  #1  Shattered Glass — Iron Cult    Genre: metal   | Mood: angry    | Score: 7.00 / 7.00
+  #2  Storm Runner — Voltline        Genre: rock    | Mood: intense  | Score: 3.70 / 7.00
+  #3  Gym Hero — Max Pulse           Genre: pop     | Mood: intense  | Score: 3.52 / 7.00
+  #4  Drop Everything — Bass Theory  Genre: edm     | Mood: euphoric | Score: 3.49 / 7.00
+  #5  Neon Carnival — Prism Kids     Genre: electronic| Mood: euphoric| Score: 3.40 / 7.00
+```
+> Observation: Perfect 7.00/7.00 for #1, then a massive drop to 3.70 for #2. Only one metal song means no meaningful variety — a real catalog weakness.
+
+### EDGE 3 — All-Middle (no strong preference, 0.5 everything)
+```
+  #1  Coffee Shop Stories — Slow Stereo Genre: jazz | Mood: relaxed  | Score: 6.17 / 7.00
+  #2  Sunday Letters — Clara Vane     Genre: r&b    | Mood: romantic | Score: 3.71 / 7.00
+  #3  Midnight Coding — LoRoom        Genre: lofi   | Mood: chill    | Score: 3.50 / 7.00
+  #4  Focus Flow — LoRoom             Genre: lofi   | Mood: focused  | Score: 3.38 / 7.00
+  #5  Golden Fields — River Moss      Genre: country| Mood: nostalgic| Score: 3.38 / 7.00
+```
+> Observation: Jazz wins easily because genre+mood both match. The +3.0 bonus inflates its score even though its numeric features aren't particularly close to 0.5.
 
 ---
 
